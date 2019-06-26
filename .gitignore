@@ -1,0 +1,4 @@
+#ignora o arquivo de commit
+commit.txt 
+#ignora o arquivo os arquivos do visual
+/.vscode/**
