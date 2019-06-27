@@ -1,6 +1,5 @@
 #ifndef _ESTRUTURAS_HPP
 #define _ESTRUTURAS_HPP
-
 /**
  * Neste arquivo serão definidas as estruturas que serão utilizadas
  * como base para o automato do interpretador léxico, assim como
@@ -13,6 +12,10 @@
  *    avaliador_de_transição
  *    leitor_de_arquivo
  */
+#include <vector>
+#include<memory>
+#include <functional>
+
 
 enum tipo_de_estado {transicao,aceitacao};
 
@@ -22,15 +25,15 @@ enum tipo_de_estado {transicao,aceitacao};
  */
 class Estado {
     public:
-        Estado(int estado,void * funcao_transicao);
-        ~Estado();
-        void set_estado(tipo_de_estado);
-        void set_transicao(void * funcao_transicao);
-        Estado * get_transicao();
+        Estado(int estado,void * funcao_transicao); // construtor da classe
+        ~Estado(); // Destrutor da classe
+        void set_estado(tipo_de_estado); // '
+        void set_transicao(std::function<Estado(char,std::shared_ptr<std::vector<Estado>>)>);
+        std::function<Estado(char,std::shared_ptr<std::vector<Estado>>)> get_transicao();
         int get_estado();
     private:
         int estado;
-        Estado * transicao;
+        std::function<Estado(char,std::shared_ptr<std::vector<Estado>>)> transicao;
 };
 
 /**
