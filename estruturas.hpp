@@ -14,26 +14,31 @@
  */
 #include <vector>
 #include<memory>
+#include <string>
 #include <functional>
 
 
 enum tipo_de_estado {transicao,aceitacao};
 
+extern bool erro_comentario_nao_fechado,
+     erro_caracter_nao_reconhecido;
 /**
  * classe: Estado
  * Descrição: Classe representando um estado do automato
  */
 class Estado {
     public:
-        Estado(int estado,void * funcao_transicao); // construtor da classe
-        ~Estado(); // Destrutor da classe
-        void set_estado(tipo_de_estado); // '
-        void set_transicao(std::function<Estado(char,std::shared_ptr<std::vector<Estado>>)>);
-        std::function<Estado(char,std::shared_ptr<std::vector<Estado>>)> get_transicao();
-        int get_estado();
+        Estado(tipo_de_estado estado,std::string classificacao, std::function<Estado*(char,std::shared_ptr<std::vector<Estado*>>)> funcao_transicao); // construtor da classe
+        void set_estado(tipo_de_estado); // 
+        void set_classificacao(std::string);
+        void set_transicao(std::function<Estado*(char,std::shared_ptr<std::vector<Estado*>>)>);
+        std::function<Estado*(char,std::shared_ptr<std::vector<Estado*>>)> get_transicao();
+        tipo_de_estado get_estado();
+        std::string get_classificacao();
     private:
-        int estado;
-        std::function<Estado(char,std::shared_ptr<std::vector<Estado>>)> transicao;
+        tipo_de_estado estado;
+        std::string classificacao;
+        std::function<Estado*(char,std::shared_ptr<std::vector<Estado*>>)> transicao;
 };
 
 /**
@@ -50,7 +55,7 @@ class Estado {
  * 
  * retorno: O próximo Estado a ser analisado.
  */
-extern Estado avaliador_de_transicao(Estado estado_atual,char entrada, Estado historico_de_estados []);
+extern Estado* avaliador_de_transicao(Estado * estado_atual,char entrada, std::shared_ptr<std::vector<Estado*>> historico_de_estados,int linha, std::string ultima_palavra);
 
 /**
  * função: lista_de_palavras_chave
@@ -59,10 +64,30 @@ extern Estado avaliador_de_transicao(Estado estado_atual,char entrada, Estado hi
  *            da palavra chave. Caso seja uma palavra chave ela
  *            é escrita diretamente no arquivo.
  * 
+ *            A busca será feita através de busca binária o que
+ *            demanda uma lista ordenada.
+ * 
  * parametros: entrada - A string com a palavra retornada do
  *                       arquivo
- * 
+ *  
+ *             linha - Linha onde a palavra se encontra
  */
-extern void lista_de_palavras_chave(char * entrada);
+extern void lista_de_palavras_chave(std::string entrada, int linha);
+
+
+/**
+ * funcao: registra_classificacao
+ * descrição: Realiza a escrita do arquivo de tabela com a classificação das palavras
+ *            do programa. O formato utilizado no armazenamento é:
+ *            PALAVRA ; CLASIFICAÇÃO ; LINHA \n
+ * 
+ * parametros: ultima_palavra - Uma string contendo a ultima palavra lida para armazenamento
+ *
+ *             classificacao - A classificação da ultima palavra lida. Esta classificação é
+ *                             atribuída pelo estado de aceitação onde a palavra finalizou.
+ * 
+ *             linha - A linha onde a palavra se encontra           
+ */
+extern void registra_classificacao(std::string ultima_palavra, std::string classificacao,int linha);
 
 #endif
