@@ -15,31 +15,42 @@
 #include <vector>
 #include<memory>
 #include <string>
+#include <map>
+#include <iostream>
 #include <functional>
+#include <fstream>
 
 
 enum tipo_de_estado {transicao,aceitacao};
 
 extern bool erro_comentario_nao_fechado,
-     erro_caracter_nao_reconhecido;
+     erro_caracter_nao_reconhecido,
+     nova_linha,
+     remove_caracter;
+
+extern std::ofstream tabela_lexica;
+extern std::vector<std::string> pk,opr;
 /**
  * classe: Estado
  * Descrição: Classe representando um estado do automato
  */
 class Estado {
     public:
-        Estado(tipo_de_estado estado,std::string classificacao, std::function<Estado*(char,std::shared_ptr<std::vector<Estado*>>)> funcao_transicao); // construtor da classe
-        void set_estado(tipo_de_estado); // 
+        Estado(tipo_de_estado estado,std::string classificacao, std::function<Estado*(char,std::shared_ptr<std::vector<Estado*>>,std::shared_ptr<std::map<std::string,Estado*>>)> funcao_transicao); // construtor da classe
+        Estado();
+        void set_estado(tipo_de_estado);
         void set_classificacao(std::string);
-        void set_transicao(std::function<Estado*(char,std::shared_ptr<std::vector<Estado*>>)>);
-        std::function<Estado*(char,std::shared_ptr<std::vector<Estado*>>)> get_transicao();
+        void set_transicao(std::function<Estado*(char,std::shared_ptr<std::vector<Estado*>>,std::shared_ptr<std::map<std::string,Estado*>>)>);
+        std::function<Estado*(char,std::shared_ptr<std::vector<Estado*>>,std::shared_ptr<std::map<std::string,Estado*>>)> get_transicao();
         tipo_de_estado get_estado();
         std::string get_classificacao();
     private:
         tipo_de_estado estado;
         std::string classificacao;
-        std::function<Estado*(char,std::shared_ptr<std::vector<Estado*>>)> transicao;
+        std::function<Estado*(char,std::shared_ptr<std::vector<Estado*>>,std::shared_ptr<std::map<std::string,Estado*>>)> transicao;
 };
+
+extern std::shared_ptr<std::map<std::string,Estado*>> lista_de_estados;
 
 /**
  * função: avaliador_de_transicao
@@ -55,7 +66,7 @@ class Estado {
  * 
  * retorno: O próximo Estado a ser analisado.
  */
-extern Estado* avaliador_de_transicao(Estado * estado_atual,char entrada, std::shared_ptr<std::vector<Estado*>> historico_de_estados,int linha, std::string ultima_palavra);
+extern Estado* avaliador_de_transicao(Estado * estado_atual,char entrada, std::shared_ptr<std::vector<Estado*>> historico_de_estados,int linha, std::string *ultima_palavra);
 
 /**
  * função: lista_de_palavras_chave
@@ -89,5 +100,5 @@ extern void lista_de_palavras_chave(std::string entrada, int linha);
  *             linha - A linha onde a palavra se encontra           
  */
 extern void registra_classificacao(std::string ultima_palavra, std::string classificacao,int linha);
-
+extern void monta_automato();
 #endif
