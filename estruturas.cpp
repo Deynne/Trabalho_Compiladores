@@ -330,7 +330,8 @@ Estado* avaliador_de_transicao(Estado * estado_atual,char entrada, std::shared_p
                 // delete historico_de_estados->back();
 
                 // Remove o caracter da ultima palavra pois ele não faz parte dela
-                ultima_palavra->erase(ultima_palavra->size()-1);
+                if(!ultima_palavra->empty())
+                    ultima_palavra->erase(ultima_palavra->size()-1);
                 
                 // Remove referência do histórico
                 historico_de_estados->pop_back();
@@ -338,8 +339,10 @@ Estado* avaliador_de_transicao(Estado * estado_atual,char entrada, std::shared_p
             
             // Se a lista foi esvaziada sem se encontrar um estado final, este caracter não pertence
             // a linguagem
-            if(historico_de_estados->empty())
-                throw std::exception();
+            if(historico_de_estados->empty()) {
+                std::cout << "O caracter \'" << entrada << "\' em linha: " << linha << " é invalido" << std:: endl;
+                std::exit(1);
+            }
                 // TODO throw caracter_nao_reconhecido_excessao("Erro de Sintaxe: Sequência de caracters não faz parte da linguagem.", linha);
             // Caso contrário, um estado final foi encontrado há, dentro dessa string uma palavra válida
             else {
@@ -361,11 +364,27 @@ Estado* avaliador_de_transicao(Estado * estado_atual,char entrada, std::shared_p
     return novo_estado;
 }
 
-void lista_de_palavras_chave(char * entrada, int linha) {
-    std::string s = entrada;
+std::string lista_de_palavras_chave(std::string entrada , std::string classificacao) {
+    for(int i = 0; i < pk.size();i++){
+        // std::cout << pk[i] << "#" <<std::endl;
+        if(entrada.compare(pk[i]) == 0)
+            return "Palavra-Chave";
+    }
+    for(int i = 0; i < opr.size();i++){
+        // std::cout << opr[i] << "#" <<std::endl;
+       if(entrada.compare(opr[i]) == 0) {
+            if(entrada.compare("or") == 0)
+                return "Operador Aditivo";
+            if(entrada.compare("and") == 0)
+                return "Operador Multiplicativo";
+       }
+    }
+    return classificacao;
 }
 
 void registra_classificacao(std::string ultima_palavra, std::string classificacao,int linha) {
-    std::cout << ultima_palavra << ";" << classificacao << ";" << std::to_string(linha) << std::endl;
+    classificacao = lista_de_palavras_chave(ultima_palavra,classificacao);
+    
+    tabela_lexica << ultima_palavra << "#" << classificacao << "#" << std::to_string(linha) << std::endl;
     // std::cout << std::endl;
 }

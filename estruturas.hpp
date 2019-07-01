@@ -30,6 +30,7 @@ extern bool erro_comentario_nao_fechado,
 
 extern std::ofstream tabela_lexica;
 extern std::vector<std::string> pk,opr;
+
 /**
  * classe: Estado
  * Descrição: Classe representando um estado do automato
@@ -83,7 +84,7 @@ extern Estado* avaliador_de_transicao(Estado * estado_atual,char entrada, std::s
  *  
  *             linha - Linha onde a palavra se encontra
  */
-extern void lista_de_palavras_chave(std::string entrada, int linha);
+extern std::string lista_de_palavras_chave(std::string entrada, std::string classificacao);
 
 
 /**

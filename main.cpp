@@ -10,23 +10,40 @@ int main(int argc,char* argv[]) {
     operadores.open("operadores",std::ios_base::binary|std::ios_base::in);
     std::string s = "";
     char ch;
-    // while(!operadores.eof()) {
-    //     ch = codigo.get();
-    //     s.append(1,ch);
-    //     if(ch == '\n') {
-    //         opr.push_back(s);
-    //         s.clear();
-    //     }
-    // }
+    while(!operadores.eof()) {
+        ch = operadores.get();
+        // if (ch == '\0')
+        //     break;
+        if(ch == '\r')
+            continue;
+        if(ch == '\n') {
+            opr.push_back(s);
+            s.clear();
+            continue;
+        }
+        s.append(1,ch); 
+    }
+    opr.push_back(s.erase(s.size()-1));
+    s.clear();
+    
+
     palavras_chave.open("palavras_chave.txt",std::ios_base::binary|std::ios_base::in);
-    // while(!palavras_chave.eof()) {
-    //     ch = codigo.get();
-    //     s.append(1,ch);
-    //     if(ch == '\n') {
-    //         pk.push_back(s);
-    //         s.clear();
-    //     }
-    // }
+    while(!palavras_chave.eof()) {
+        ch = palavras_chave.get();
+        // if (ch == '\0')
+        //     break;
+        if(ch == '\r')
+            continue;
+        if(ch == '\n') {
+            pk.push_back(s);
+            s.clear();
+            continue;
+        }
+        s.append(1,ch);
+    }
+    pk.push_back(s.erase(s.size()-1));
+    s.clear();
+
     codigo.open("codigo",std::ios_base::binary|std::ios_base::in);
 
     monta_automato();
@@ -78,10 +95,16 @@ int main(int argc,char* argv[]) {
         }
         posicao++;     
     }
+    if(erro_comentario_nao_fechado) {
+        std::cout << "O comentario foi aberto mas não foi fechado." << std:: endl;
+        std::exit(1);
+    }
+
     if (novo != NULL && novo->get_estado() == aceitacao) {
         registra_classificacao(ultima_palavra,novo->get_classificacao(),linha);
     }
 
+    
     // std::cout << (int) '0' << " " << (int) '9';
     return 0;
 }
