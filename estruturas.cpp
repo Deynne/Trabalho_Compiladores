@@ -89,7 +89,18 @@ void monta_automato() {
     (*lista_de_estados)["identificadores"] = new Estado();
     (*lista_de_estados)["identificadores"]->set_estado(aceitacao);
     (*lista_de_estados)["identificadores"]->set_classificacao("Identificador");
+    
+    // ADIÇÕES DA AULA
+    
+    (*lista_de_estados)["potenciaE"] = new Estado();
+    (*lista_de_estados)["potenciaE"]->set_classificacao("e_E");
+    
+    (*lista_de_estados)["sinal"] = new Estado();
+    (*lista_de_estados)["sinal"]->set_classificacao("sinal_potencia");
 
+    (*lista_de_estados)["numeros_reais#2"] = new Estado();
+    (*lista_de_estados)["numeros_reais#2"]->set_estado(aceitacao);
+    (*lista_de_estados)["numeros_reais#2"]->set_classificacao("Numero real");
     /*****************************************************************
      * Lista de estas criada, agora serão instanciadas as transições *
      *****************************************************************/
@@ -189,6 +200,8 @@ void monta_automato() {
             return (*lista_de_estados)["numeros_reais"];
         else if(entrada >= '0' && entrada <= '9')
             return (*lista_de_estados)["numeros_inteiros"];
+        else if(entrada == 'e' || entrada == 'E')
+            return (*lista_de_estados)["potenciaE"];
         else
             return NULL;
     });
@@ -197,6 +210,29 @@ void monta_automato() {
     (*lista_de_estados)["numeros_reais"]->set_transicao([](char entrada,std::shared_ptr<std::vector<Estado*>> historico,std::shared_ptr<std::map<std::string,Estado*>> lista_de_estados)-> Estado *{
         if(entrada >= '0' && entrada <= '9')
             return (*lista_de_estados)["numeros_reais"];
+        else if(entrada == 'e' || entrada == 'E')
+            return (*lista_de_estados)["potenciaE"];
+        else
+            return NULL;
+    });
+    
+    (*lista_de_estados)["potenciaE"]->set_transicao([](char entrada,std::shared_ptr<std::vector<Estado*>> historico,std::shared_ptr<std::map<std::string,Estado*>> lista_de_estados)-> Estado *{
+        if(entrada == '+' || entrada == '-')
+            return (*lista_de_estados)["sinal"];
+        else
+            return NULL;
+    });
+    
+    (*lista_de_estados)["sinal"]->set_transicao([](char entrada,std::shared_ptr<std::vector<Estado*>> historico,std::shared_ptr<std::map<std::string,Estado*>> lista_de_estados)-> Estado *{
+        if(entrada >= '0' && entrada <= '9') 
+            return (*lista_de_estados)["numeros_reais#2"];
+        else
+            return NULL;
+    });
+    
+    (*lista_de_estados)["numeros_reais#2"]->set_transicao([](char entrada,std::shared_ptr<std::vector<Estado*>> historico,std::shared_ptr<std::map<std::string,Estado*>> lista_de_estados)-> Estado *{
+        if(entrada >= '0' && entrada <= '9') 
+            return (*lista_de_estados)["numeros_reais#2"];
         else
             return NULL;
     });

@@ -1,8 +1,2 @@
-program teste;{programa exemplo}
+.87.93e+2
 
-	        var
-           valor1: integer;
-           valor2: real;
-           begin
-           valor1 := 10;
-           end.
