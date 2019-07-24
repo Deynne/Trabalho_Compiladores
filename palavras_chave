@@ -1,11 +1,13 @@
 begin
 boolean
+case
 do
 else
 end
 if
 integer
 not
+of
 procedure
 program
 real

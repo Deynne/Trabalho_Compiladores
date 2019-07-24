@@ -2,4 +2,8 @@
 commit.txt 
 #ignora o arquivo os arquivos do visual
 /.vscode/**
-executavel.exe
+*.exe
+executavel
+#ignora arquivos velhos ou de dump
+*.old
+*.stackdump
